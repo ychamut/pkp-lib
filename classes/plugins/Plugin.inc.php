@@ -315,8 +315,8 @@ abstract class Plugin {
 		$pluginPath = $this->getPluginPath();
 		$plugin = basename($pluginPath);
 		$category = basename(dirname($pluginPath));
-
-		return join('/', array(PLUGIN_TEMPLATE_RESOURCE_PREFIX, $pluginPath, $category, $plugin));
+		// Slash characters (/) are not allowed in resource names, so use dashes (-) instead.
+		return strtr(join('/', array(PLUGIN_TEMPLATE_RESOURCE_PREFIX, $pluginPath, $category, $plugin)),'/','-');
 	}
 
 	/**
@@ -329,7 +329,7 @@ abstract class Plugin {
 		if ($inCore) {
 			$basePath = $basePath . DIRECTORY_SEPARATOR . PKP_LIB_PATH;
 		}
-		return "file:$basePath" . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR;
+		return "$basePath" . DIRECTORY_SEPARATOR . $this->getPluginPath() . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -338,12 +338,7 @@ abstract class Plugin {
 	public function _registerTemplateResource() {
 		$templateMgr = TemplateManager::getManager();
 		$pluginTemplateResource = new PKPTemplateResource($this->getPluginPath());
-		$templateMgr->register_resource($this->getTemplateResourceName(), array(
-			array($pluginTemplateResource, 'fetch'),
-			array($pluginTemplateResource, 'fetchTimestamp'),
-			array($pluginTemplateResource, 'getSecure'),
-			array($pluginTemplateResource, 'getTrusted')
-		));
+		$templateMgr->registerResource($this->getTemplateResourceName(), $pluginTemplateResource);
 	}
 
 	/**
