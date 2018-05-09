@@ -137,6 +137,11 @@
 			</fieldset>
 		{/if}
 
+		<legend>
+			{translate key="submission.submit.privacyStatement"}
+		</legend>
+		<p>{$currentContext->getLocalizedSetting('privacyStatement')}</p>
+
 		<div class="buttons">
 			<button class="submit" type="submit">
 				{translate key="user.register"}
